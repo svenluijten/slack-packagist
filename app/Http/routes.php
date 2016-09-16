@@ -11,10 +11,7 @@
 |
 */
 
-$app->get('/', function () use ($app) {
-    return $app->version();
-});
-
-$app->post('hook', function() {
-    return [];
-});
+$app->get('/', 'SlackController@home');
+$app->get('installed', 'SlackController@installed');
+$app->get('hook', 'SlackController@hook');
+$app->get('auth', 'SlackController@auth');
