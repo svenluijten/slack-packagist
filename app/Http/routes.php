@@ -13,5 +13,5 @@
 
 $app->get('/', 'SlackController@home');
 $app->get('installed', 'SlackController@installed');
-$app->get('hook', 'SlackController@hook');
+$app->post('hook', 'SlackController@hook');
 $app->get('auth', 'SlackController@auth');
