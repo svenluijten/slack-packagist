@@ -19,11 +19,6 @@ class SlackController extends Controller
     {
         $packagist = new Client();
         $query = trim($request->get('text'), '/');
-
-        return [
-            'text' => $query,
-        ];
-
         $results = $packagist->search($query);
 
         if (isset($results[0])) {
