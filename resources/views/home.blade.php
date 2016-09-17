@@ -10,6 +10,10 @@
         from within Slack.
     </p>
 
+    <blockquote>
+        Packagist Bot is not owned by and/or affiliated with the good folks over at <a href="//packagist.org">Packagist</a>.
+    </blockquote>
+
     <a href="https://slack.com/oauth/authorize?scope=commands&client_id={{ getenv('SLACK_CLIENT_ID') }}&redirect_uri={{ getenv('SLACK_REDIRECT_URI') }}" class="no-style">
         <img alt="Add to Slack"
              height="40"
