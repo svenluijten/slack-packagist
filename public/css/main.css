@@ -1,5 +1,9 @@
 @import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500';
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0 auto;
     max-width: 50em;
@@ -62,6 +66,12 @@ footer {
     background: #F28D1A;
     border-color: #F28D1A;
     color: #FFFFFF;
+}
+
+p.is-centered {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
 }
 
 img {

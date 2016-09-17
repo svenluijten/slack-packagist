@@ -15,4 +15,6 @@
 
         </ul>
     </nav>
+
+    <p class="is-centered">Made by <a href="//svenluijten.com">Sven Luijten</a></p>
 </footer>
