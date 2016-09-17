@@ -76,7 +76,7 @@ class SlackController extends Controller
                 [
                     'fallback' => $package->getDescription(),
                     'title' => $package->getName(),
-                    'title_link' => $package->getRepository(),
+                    'title_link' => $package->getUrl(),
                     'text' => $package->getDescription(),
                     'fields' => [
                         [
