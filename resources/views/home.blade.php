@@ -25,5 +25,5 @@
         return the top result from <a href="//packagist.org" target="_blank">Packagist</a>.
     </p>
 
-    <img src="http://i.imgur.com/NfNQIcF.png">
+    <img src="{{ url('images/demo.png') }}">
 @endsection
