@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Packagist\Api\Client;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
@@ -17,12 +17,13 @@ class SlackController extends Controller
      */
     public function hook(Request $request)
     {
-        $packagist = new Client();
+        $client = new Client();
         $query = trim($request->get('text'), '/');
-        $results = $packagist->search($query);
+        $result = $client->request('GET', 'https://packagist.org/search.json?q='.$query);
+        $packages = json_decode($result->getBody());
 
-        if (isset($results[0])) {
-            return $this->respondWithPackage($results[0]);
+        if (isset($packages->results[0])) {
+            return $this->respondWithPackage($packages->results[0]);
         }
 
         return [
@@ -74,23 +75,23 @@ class SlackController extends Controller
             'response_type' => 'in_channel',
             'attachments' => [
                 [
-                    'fallback' => $package->getDescription(),
-                    'title' => $package->getName(),
-                    'title_link' => $package->getUrl(),
-                    'text' => $package->getDescription(),
+                    'fallback' => $package->description,
+                    'title' => $package->name,
+                    'title_link' => $package->url,
+                    'text' => $package->description,
                     'fields' => [
                         [
                             'title' => 'Stars',
-                            'value' => $package->getFavers(),
+                            'value' => $package->favers,
                             'short' => true,
                         ],
                         [
                             'title' => 'Downloads',
-                            'value' => $package->getDownloads(),
+                            'value' => $package->downloads,
                             'short' => true,
                         ],
                     ],
-                ]
+                ],
             ],
         ];
     }
