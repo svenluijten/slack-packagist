@@ -82,12 +82,12 @@ class SlackController extends Controller
                     'fields' => [
                         [
                             'title' => 'Stars',
-                            'value' => $package->favers,
+                            'value' => number_format($package->favers),
                             'short' => true,
                         ],
                         [
                             'title' => 'Downloads',
-                            'value' => $package->downloads,
+                            'value' => number_format($package->downloads),
                             'short' => true,
                         ],
                     ],
