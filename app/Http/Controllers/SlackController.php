@@ -95,14 +95,4 @@ class SlackController extends Controller
             ],
         ];
     }
-
-    public function installed()
-    {
-    	return view('installed');
-    }
-
-    public function home()
-    {
-    	return view('home');
-    }
 }
