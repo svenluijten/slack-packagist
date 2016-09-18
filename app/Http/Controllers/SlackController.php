@@ -9,6 +9,13 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class SlackController extends Controller
 {
+    protected $client;
+
+    public function __construct()
+    {
+        $this->client = new Client();
+    }
+
     /**
      * Respond to the webhook from Slack.
      *
@@ -17,13 +24,16 @@ class SlackController extends Controller
      */
     public function hook(Request $request)
     {
-        $client = new Client();
         $query = trim($request->get('text'), '/');
-        $result = $client->request('GET', 'https://packagist.org/search.json?q='.$query);
-        $packages = json_decode($result->getBody());
 
-        if (isset($packages->results[0])) {
-            return $this->respondWithPackage($packages->results[0]);
+        if (str_contains($query, '/')) {
+            $package = $this->searchWithVendor($query);
+        } else {
+            $package = $this->searchWithoutVendor($query);
+        }
+
+        if ($package) {
+            return $this->respondWithPackage($package);
         }
 
         return [
@@ -66,33 +76,73 @@ class SlackController extends Controller
     /**
      * Respond with a formatted response for Slack.
      *
-     * @param $package
+     * @param array $package
      * @return array
      */
-    protected function respondWithPackage($package)
+    protected function respondWithPackage(array $package)
     {
         return [
             'response_type' => 'in_channel',
             'attachments' => [
                 [
-                    'fallback' => $package->description,
-                    'title' => $package->name,
-                    'title_link' => $package->url,
-                    'text' => $package->description,
+                    'fallback' => $package['description'],
+                    'title' => $package['name'],
+                    'title_link' => $package['url'],
+                    'text' => $package['description'],
                     'fields' => [
                         [
                             'title' => ':sparkles: Stars',
-                            'value' => number_format($package->favers),
+                            'value' => number_format($package['favers']),
                             'short' => true,
                         ],
                         [
                             'title' => ':arrow_down: Downloads',
-                            'value' => number_format($package->downloads),
+                            'value' => number_format($package['downloads']),
                             'short' => true,
                         ],
                     ],
                 ],
             ],
+        ];
+    }
+
+    protected function searchWithoutVendor($query)
+    {
+        $result = $this->client->request('GET', 'https://packagist.org/search.json?q='.$query);
+        $packages = json_decode($result->getBody());
+
+        if (empty($packages->results)) {
+            return false;
+        }
+
+        $package = $packages->results[0];
+
+        return [
+            'name' => $package->name,
+            'description' => $package->description,
+            'url' => $package->url,
+            'favers' => $package->favers,
+            'downloads' => $package->downloads,
+        ];
+    }
+
+    private function searchWithVendor($query)
+    {
+        try {
+            $result = $this->client->request('GET', 'https://packagist.org/packages/'.$query.'.json');
+        } catch (\Exception $e) {
+            return false;
+        }
+
+        $response = json_decode($result->getBody());
+        $package = $response->package;
+
+        return [
+            'name' => $package->name,
+            'description' => $package->description,
+            'url' => 'https://packagist.org/packages/'.$query,
+            'favers' => $package->github_stars,
+            'downloads' => $package->downloads->total,
         ];
     }
 }
