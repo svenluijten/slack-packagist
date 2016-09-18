@@ -9,8 +9,14 @@ use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
 class SlackController extends Controller
 {
+    /**
+     * @var Client
+     */
     protected $client;
 
+    /**
+     * Instantiate the SlackController.
+     */
     public function __construct()
     {
         $this->client = new Client();
