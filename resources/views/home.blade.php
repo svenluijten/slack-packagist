@@ -26,7 +26,7 @@
     <h2>Usage</h2>
     <p>
         You can search for <code>vendor/package-name</code> or simply give it a search term. It will try to return the
-        package itself (if you include a `/`), otherwise it will return the top result from <a href="//packagist.org">Packagist</a>.
+        package itself (if you include a <code>/</code>), otherwise it will return the top result from <a href="//packagist.org">Packagist</a>.
     </p>
 
     <img src="{{ url('images/demo.png') }}">
