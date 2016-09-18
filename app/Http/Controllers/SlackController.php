@@ -106,6 +106,12 @@ class SlackController extends Controller
         ];
     }
 
+    /**
+     * Search packagist regularly.
+     *
+     * @param $query
+     * @return array|bool
+     */
     protected function searchWithoutVendor($query)
     {
         $result = $this->client->request('GET', 'https://packagist.org/search.json?q='.$query);
@@ -126,12 +132,18 @@ class SlackController extends Controller
         ];
     }
 
-    private function searchWithVendor($query)
+    /**
+     * Go to a specific package directly.
+     *
+     * @param $query
+     * @return array|bool
+     */
+    protected function searchWithVendor($query)
     {
         try {
             $result = $this->client->request('GET', 'https://packagist.org/packages/'.$query.'.json');
         } catch (\Exception $e) {
-            return false;
+            return $this->searchWithoutVendor($query);
         }
 
         $response = json_decode($result->getBody());
