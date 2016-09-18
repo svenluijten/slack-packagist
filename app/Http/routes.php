@@ -1,6 +1,6 @@
 <?php
 
-$app->get('hook', 'SlackController@hook');
+$app->post('hook', 'SlackController@hook');
 $app->get('auth', 'SlackController@auth');
 
 $app->get('/', 'PagesController@home');
