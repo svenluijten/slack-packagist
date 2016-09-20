@@ -68,7 +68,7 @@ class SlackController extends Controller
 
         if ($request->get('code')) {
             try {
-                // We'll just request an access token and do nothing with it, which will complete the OAuth flow.
+                // We'll just request an access token and do nothing with it, completing the OAuth flow
                 $provider->getAccessToken('authorization_code', [
                     'code' => $request->get('code')
                 ]);
@@ -76,6 +76,7 @@ class SlackController extends Controller
                 // Silently fail... shhhh.
             }
         }
+
         return redirect('/installed');
     }
 
