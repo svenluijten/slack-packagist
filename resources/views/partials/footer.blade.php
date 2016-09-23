@@ -16,5 +16,7 @@
         </ul>
     </nav>
 
-    <p class="is-centered">Made by <a href="//svenluijten.com">Sven Luijten</a></p>
+    <p class="is-centered">
+        Made by <a href="//svenluijten.com">Sven Luijten</a>, hosted by <a href="//m.do.co/c/1325c0b73b84">DigitalOcean</a>.
+    </p>
 </footer>
