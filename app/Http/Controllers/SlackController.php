@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\ValueObjects\Package;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use League\OAuth2\Client\Provider\GenericProvider;
@@ -38,7 +39,7 @@ class SlackController extends Controller
             $package = $this->searchWithoutVendor($query);
         }
 
-        if ($package) {
+        if ($package instanceof Package) {
             return $this->respondWithPackage($package);
         }
 
@@ -83,29 +84,35 @@ class SlackController extends Controller
     /**
      * Respond with a formatted response for Slack.
      *
-     * @param array $package
+     * @param Package $package
      * @return array
      */
-    protected function respondWithPackage(array $package)
+    protected function respondWithPackage(Package $package)
     {
         return [
             'response_type' => 'in_channel',
             'attachments' => [
                 [
-                    'fallback' => $package['description'],
-                    'title' => $package['name'],
-                    'title_link' => $package['url'],
-                    'text' => $package['description'],
+                    'fallback' => $package->getDescription(),
+                    'title' => $package->getName(),
+                    'title_link' => $package->getUrl(),
+                    'text' => $package->getDescription(),
+                    'mrkdwn_in' => ['fields'],
                     'fields' => [
                         [
                             'title' => ':sparkles: Stars',
-                            'value' => number_format($package['favers']),
+                            'value' => $package->getFavers(),
                             'short' => true,
                         ],
                         [
                             'title' => ':arrow_down: Downloads',
-                            'value' => number_format($package['downloads']),
+                            'value' => $package->getDownloads(),
                             'short' => true,
+                        ],
+                        [
+                            'title' => ':package: Install command',
+                            'value' => $package->getInstallCommand(),
+                            'short' => false,
                         ],
                     ],
                 ],
@@ -117,51 +124,38 @@ class SlackController extends Controller
      * Search packagist regularly.
      *
      * @param $query
-     * @return array|bool
+     * @return Package|bool
      */
     protected function searchWithoutVendor($query)
     {
-        $result = $this->client->request('GET', 'https://packagist.org/search.json?q='.$query);
-        $packages = json_decode($result->getBody());
+        $result = $this->client->request('GET', 'https://packagist.org/search.json?q=' . $query);
+        $packages = json_decode($result->getBody(), true);
 
-        if (empty($packages->results)) {
+        if (empty($packages['results'])) {
             return false;
         }
 
-        $package = $packages->results[0];
+        $package = $packages['results'][0];
 
-        return [
-            'name' => $package->name,
-            'description' => $package->description,
-            'url' => $package->url,
-            'favers' => $package->favers,
-            'downloads' => $package->downloads,
-        ];
+        return Package::fromSearchResult($package);
     }
 
     /**
      * Go to a specific package directly.
      *
      * @param $query
-     * @return array|bool
+     * @return Package|bool
      */
     protected function searchWithVendor($query)
     {
         try {
-            $result = $this->client->request('GET', 'https://packagist.org/packages/'.$query.'.json');
+            $result = $this->client->request('GET', 'https://packagist.org/packages/' . $query . '.json');
         } catch (\Exception $e) {
             return $this->searchWithoutVendor($query);
         }
 
-        $response = json_decode($result->getBody());
-        $package = $response->package;
+        $response = json_decode($result->getBody(), true);
 
-        return [
-            'name' => $package->name,
-            'description' => $package->description,
-            'url' => 'https://packagist.org/packages/'.$query,
-            'favers' => $package->github_stars,
-            'downloads' => $package->downloads->total,
-        ];
+        return Package::fromPackageDetails($response);
     }
 }
