@@ -11,7 +11,7 @@ class PagesController extends Controller
      */
     public function installed()
     {
-    	return view('installed');
+        return view('installed');
     }
 
     /**
@@ -21,7 +21,7 @@ class PagesController extends Controller
      */
     public function home()
     {
-    	return view('home');
+        return view('home');
     }
 
     /**
@@ -31,7 +31,7 @@ class PagesController extends Controller
      */
     public function support()
     {
-    	return view('support');
+        return view('support');
     }
 
     /**
@@ -41,6 +41,6 @@ class PagesController extends Controller
      */
     public function privacy()
     {
-    	return view('privacy');
+        return view('privacy');
     }
 }

@@ -92,14 +92,14 @@ class Package
 
     /**
      * Constructor made protected in favour of a static constructor
-     * Since we can construct the object based on a specific context
+     * Since we can construct the object based on a specific context.
      *
      * @param array $formattedArray
      */
     protected function __construct(array $formattedArray)
     {
         foreach ($formattedArray as $property => $value) {
-            if (!property_exists(self::class, $property)) {
+            if (! property_exists(self::class, $property)) {
                 continue;
             }
 
@@ -108,9 +108,10 @@ class Package
     }
 
     /**
-     * Create a new Package object from a deserialized packagist search response
+     * Create a new Package object from a deserialized packagist search response.
      *
      * @param array $searchResult
+     *
      * @return static
      */
     public static function fromSearchResult(array $searchResult)
@@ -119,19 +120,20 @@ class Package
     }
 
     /**
-     * Create a new Package object from a deserialized packagist package details response
+     * Create a new Package object from a deserialized packagist package details response.
      *
      * @param array $packageDetails
+     *
      * @return static
      */
     public static function fromPackageDetails(array $packageDetails)
     {
-        if (!array_key_exists('package', $packageDetails)) {
+        if (! array_key_exists('package', $packageDetails)) {
             throw new \InvalidArgumentException('Missing package details in response');
         }
 
         $package = $packageDetails['package'];
-        $package['url'] = 'https://packagist.org/packages/' . $package['name'];
+        $package['url'] = 'https://packagist.org/packages/'.$package['name'];
         $package['downloads'] = $package['downloads']['total'];
 
         return new self($package);

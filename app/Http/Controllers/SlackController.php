@@ -27,6 +27,7 @@ class SlackController extends Controller
      * Respond to the webhook from Slack.
      *
      * @param Request $request
+     *
      * @return array
      */
     public function hook(Request $request)
@@ -51,9 +52,10 @@ class SlackController extends Controller
 
     /**
      * Authenticate with Slack.
-     * Only slightly stolen from Chris White <https://github.com/cwhite92/XKCDBot>
+     * Only slightly stolen from Chris White <https://github.com/cwhite92/XKCDBot>.
      *
      * @param Request $request
+     *
      * @return RedirectResponse
      */
     public function auth(Request $request)
@@ -71,7 +73,7 @@ class SlackController extends Controller
             try {
                 // We'll just request an access token and do nothing with it, completing the OAuth flow
                 $provider->getAccessToken('authorization_code', [
-                    'code' => $request->get('code')
+                    'code' => $request->get('code'),
                 ]);
             } catch (IdentityProviderException $e) {
                 // Silently fail... shhhh.
@@ -85,6 +87,7 @@ class SlackController extends Controller
      * Respond with a formatted response for Slack.
      *
      * @param Package $package
+     *
      * @return array
      */
     protected function respondWithPackage(Package $package)
@@ -124,11 +127,12 @@ class SlackController extends Controller
      * Search packagist regularly.
      *
      * @param $query
+     *
      * @return Package|bool
      */
     protected function searchWithoutVendor($query)
     {
-        $result = $this->client->request('GET', 'https://packagist.org/search.json?q=' . $query);
+        $result = $this->client->request('GET', 'https://packagist.org/search.json?q='.$query);
         $packages = json_decode($result->getBody(), true);
 
         if (empty($packages['results'])) {
@@ -144,12 +148,13 @@ class SlackController extends Controller
      * Go to a specific package directly.
      *
      * @param $query
+     *
      * @return Package|bool
      */
     protected function searchWithVendor($query)
     {
         try {
-            $result = $this->client->request('GET', 'https://packagist.org/packages/' . $query . '.json');
+            $result = $this->client->request('GET', 'https://packagist.org/packages/'.$query.'.json');
         } catch (\Exception $e) {
             return $this->searchWithoutVendor($query);
         }
