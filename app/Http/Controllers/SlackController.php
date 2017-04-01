@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\ValueObjects\Package;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use App\ValueObjects\Package;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Provider\Exception\IdentityProviderException;
 
