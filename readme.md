@@ -1,3 +1,5 @@
+> This repository has moved! Head on over to [pkgst/pkgst.co](https://github.com/pkgst/pkgst.co) for the updated codebase.
+
 # Packagist Bot for Slack
 A small web-app to add a `/packagist` command to a Slack team. The command returns the first result
 it finds.
